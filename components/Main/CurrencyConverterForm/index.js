@@ -17,6 +17,10 @@ const CurrencyConverterForm = props => {
     fetchRates();
   }, []);
 
+  useEffect(() => {
+    convert();
+  }, [currencyFromValue, currencyFrom, currencyTo]);
+
   const fetchRates = async () => {
     const { rates } = await getRates();
     const rateList = Object.keys(rates).map(rate => ({
@@ -27,6 +31,15 @@ const CurrencyConverterForm = props => {
     setOptions(rateList);
   };
 
+  const convert = async () => {
+    const data = await convertCurrency(
+      currencyFrom,
+      currencyTo,
+      currencyFromValue
+    );
+    setCurrencyToValue(data);
+  };
+
   const handleChangeCurrencyFromValue = async value => {
     setCurrencyFromValue(value);
     const data = await convertCurrency(currencyFrom, currencyTo, value);
@@ -35,22 +48,19 @@ const CurrencyConverterForm = props => {
 
   const handleChangeCurrencyFrom = async value => {
     setCurrencyFrom(value);
-    const data = await convertCurrency(
-      currencyFrom,
-      currencyTo,
-      currencyFromValue
-    );
-    setCurrencyToValue(data);
   };
 
   const handleChangeCurrencyTo = async value => {
     setCurrencyTo(value);
-    const data = await convertCurrency(
-      currencyFrom,
-      currencyTo,
-      currencyFromValue
-    );
-    setCurrencyToValue(data);
+  };
+
+  const handleReverse = async () => {
+    setCurrencyFrom(currencyTo);
+    setCurrencyTo(currencyFrom);
+  };
+
+  const handleClear = () => {
+    setCurrencyFromValue('');
   };
 
   return (
@@ -91,10 +101,10 @@ const CurrencyConverterForm = props => {
           </Row>
           <Row style={{ marginVertical: 10 }}>
             <Col style={{ padding: 10 }}>
-              <Button title="Reverse" color="#428bca" />
+              <Button title="Reverse" color="#428bca" onPress={handleReverse} />
             </Col>
             <Col style={{ padding: 10 }}>
-              <Button title="Clear" color="#d9534f" />
+              <Button title="Clear" color="#d9534f" onPress={handleClear} />
             </Col>
           </Row>
         </Grid>
