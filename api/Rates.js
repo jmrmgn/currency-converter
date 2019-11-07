@@ -1,8 +1,9 @@
+/* eslint-disable no-undef */
 const URL = 'https://api.exchangeratesapi.io/';
 
-const getRates = async () => {
-  // eslint-disable-next-line no-undef
-  const response = await fetch(`${URL}latest`);
+const getRates = async (base = 'PHP') => {
+  const baseCurrency = base ? `?base=${base}` : '';
+  const response = await fetch(`${URL}latest${baseCurrency}`);
   const data = await response.json();
 
   return data;
@@ -10,7 +11,7 @@ const getRates = async () => {
 
 const convertCurrency = async (currencyFrom, currencyTo, value = 0) => {
   if (!currencyFrom || !currencyTo) return 0;
-  // eslint-disable-next-line no-undef
+
   const response = await fetch(
     `${URL}latest?base=${currencyFrom.toUpperCase()}&symbols=${currencyTo.toUpperCase()}`
   );

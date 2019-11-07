@@ -81,6 +81,7 @@ const CurrencyConverterForm = props => {
                   placeholder="0.00"
                   value={currencyFromValue}
                   onChangeText={handleChangeCurrencyFromValue}
+                  keyboardType="numeric"
                 />
               </View>
             </Col>

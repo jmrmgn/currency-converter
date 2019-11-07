@@ -15,13 +15,15 @@ const RateItem = ({ item }) => {
           }}
         >
           <Col size={30}>
-            <Thumbnail
-              source={{
-                uri: 'https://www.countryflags.io/us/flat/64.png'
-              }}
-              square
-              small
-            />
+            <View style={styles.imageContainer}>
+              <Thumbnail
+                source={{
+                  uri: item.flag
+                }}
+                square
+                small
+              />
+            </View>
           </Col>
           <Col size={30}>
             <Label>{item.code}</Label>
@@ -42,7 +44,7 @@ RateItem.propTypes = {
 const RateList = ({ data }) => {
   return (
     <FlatList
-      keyExtractor={item => item.id}
+      keyExtractor={item => item.code}
       data={data}
       renderItem={({ item }) => <RateItem item={item} />}
       numColumns={2}
@@ -63,6 +65,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '50%'
+  },
+  imageContainer: {
+    marginVertical: 5
   }
 });
 
