@@ -1,26 +1,27 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { Card, CardItem, Label } from 'native-base';
 import { Grid, Row, Col } from 'react-native-easy-grid';
 
 import RateList from './RateList';
+import { getCountries } from '../../../api/Countries';
 
 const CurrencyExchangeRates = props => {
-  const data = [
-    { id: 1, code: 'PHP', rate: 100.2 },
-    { id: 2, code: 'PHP', rate: 53 },
-    { id: 3, code: 'PHP', rate: 53 },
-    { id: 4, code: 'PHP', rate: 53 },
-    { id: 5, code: 'PHP', rate: 53 },
-    { id: 6, code: 'PHP', rate: 53 },
-    { id: 7, code: 'PHP', rate: 53 },
-    { id: 8, code: 'PHP', rate: 53 },
-    { id: 9, code: 'PHP', rate: 53 },
-    { id: 10, code: 'PHP', rate: 53 },
-    { id: 11, code: 'PHP', rate: 53 },
-    { id: 12, code: 'PHP', rate: 53 },
-    { id: 12, code: 'PHP', rate: 53 }
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [rateList, setRateList] = useState([]);
+  const [date, setDate] = useState();
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    const { date, countries: data } = await getCountries();
+    setRateList(data);
+    setDate(date);
+    setIsLoading(false);
+  };
 
   return (
     <Card>
@@ -31,10 +32,11 @@ const CurrencyExchangeRates = props => {
               <Label>Currency Exchange Rates</Label>
             </Col>
           </Row>
-          <Row>
-            <Label style={{ fontSize: 12 }}>As of August 2012</Label>
-          </Row>
-          {data.length === 0 ? (
+          {isLoading ? (
+            <View style={styles.centered}>
+              <ActivityIndicator size="large" style={{ padding: 20 }} />
+            </View>
+          ) : rateList.length === 0 ? (
             <View style={styles.centered}>
               <Label style={{ fontSize: 13, color: 'gray' }}>
                 No data yet.
@@ -42,8 +44,11 @@ const CurrencyExchangeRates = props => {
             </View>
           ) : (
             <>
+              <Row>
+                <Label style={{ fontSize: 12 }}>As of {date}</Label>
+              </Row>
               <Row style={{ marginVertical: 10 }}>
-                <RateList data={data} />
+                <RateList data={rateList} />
               </Row>
               <Row>
                 <Col>
@@ -60,6 +65,7 @@ const CurrencyExchangeRates = props => {
               </Row>
             </>
           )}
+          {}
         </Grid>
       </CardItem>
     </Card>
